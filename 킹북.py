@@ -23,7 +23,12 @@ def PosSet(WhatNum): # 사각형 기준 왼쪽 위 모서리로 거북이를 옮
         t.goto(450, t.ycor())
 
 while 1:
+    T = t.clone()
     t.reset()
+    T.reset()
+    T.ht()
+    T.up()
+    T.color("red")
     pygame.init()
     music = pygame.mixer.music
     music.load("Darara_5sec.mp3")
@@ -37,7 +42,6 @@ while 1:
 
     # 거북이가 판 그리는 부분 ㅇㅈ?
     music.play()
-    TestStartTime = time.time() # 판 그리는데 몇 초 걸리는지 재기 위함
     t.speed(10)
     t.pensize(10) # 거북이 똥 사이즈 10
     t.up()
@@ -65,8 +69,6 @@ while 1:
         t.fd(450)
         t.rt(90)
         t.fd(1000) # 이 부분까지 세로선 그리는 부분
-    TestEndTime = time.time()
-    print("판 그리는데 걸린 시간 >> ", TestEndTime - TestStartTime)
 
     Text_X = - 675
     Text_Y = 360
@@ -87,7 +89,6 @@ while 1:
     t.setpos(0, 0)
     WhatNum = int(t.numinput("숫자 입력", "거북이가 몇 번 구역으로 갈 것 같으세요?"))
 
-
     PosSet(WhatNum)
     t.setheading(0)
     t.begin_fill()
@@ -101,7 +102,7 @@ while 1:
     t.setheading(0)
     t.fd(225)
     t.setheading(-90)
-    t.fd(130)
+    t.fd(140)
     t.write(WhatNum, False, "center", ("Consolas", 30))
 
     PosSet(WhatNum)
@@ -123,9 +124,10 @@ while 1:
     music.load("Koong_Long.mp3")
     MusicStart = time.time()
     music.play()
+    Timer = int(time.time() - StartTime)
     while 1:
-        NowTime = time.time()
-        if RunningTime <= NowTime - StartTime:
+        if RunningTime <= time.time() - StartTime:
+            T.clear()
             EndPosition = t.pos()
             for x in Square_X:
                 if EndPosition[0] < x: # 가로 경계선을 기준으로 어디서 끝났는지 구하기 위함
@@ -139,10 +141,16 @@ while 1:
             music.load("Ending.mp3")
             music.play()
             break
+        T.write(Timer, False, "center", ("Consolas", 20))
         angle = r.randint(-30, 30)
         t.fd(5)
         a += angle
         t.setheading(a)
+        if Timer != int(time.time() - StartTime):
+            T.clear()
+            Timer = int(time.time() - StartTime)
+            T.write(Timer, False, "center", ("Consolas", 20))
+
 
         # 거북이가 가장자리에 닿았을 때
         # 튕기게 하는 부분 ㅇㅈ? ㅇ ㅇㅈ
