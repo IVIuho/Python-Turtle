@@ -22,29 +22,50 @@ def PosSet(WhatNum): # 사각형 기준 왼쪽 위 모서리로 거북이를 옮
     elif WhatNum % 4 == 0:
         t.goto(450, t.ycor())
 
+def ClonePosSet(WhatNum): # 사각형 기준 왼쪽 위 모서리로 클론 거북이 T를 옮기는 함수
+    if WhatNum <= 4:
+        T.goto(T.xcor(), 500)
+    elif WhatNum <= 8:
+        T.goto(T.xcor(), 250)
+    elif WhatNum <= 12:
+        T.goto(T.xcor(), 0)
+    elif WhatNum <= 16:
+        T.goto(T.xcor(), -250)
+
+    if WhatNum % 4 == 1:
+        T.goto(-900, T.ycor())
+    elif WhatNum % 4 == 2:
+        T.goto(-450, T.ycor())
+    elif WhatNum % 4 == 3:
+        T.goto(0, T.ycor())
+    elif WhatNum % 4 == 0:
+        T.goto(450, T.ycor())
+
+music = pygame.mixer.music
+t.title("거북왕을 찾아라")
+t.shape("turtle")
+t.setup(width = 1920, height = 1070, startx = 0, starty = 0)
+T = t.clone()
+T.speed(0)
 while 1:
-    T = t.clone()
     t.reset()
-    T.reset()
-    T.ht()
-    T.up()
-    T.color("red")
+    T.clear()
+    T.ht() # 타이머만 출력할거니까 은신
+    T.up() # 타이머만 출력할거니까 거북이놈 꼬리 들쳐버리기
+    T.color("red") # 글자 색깔 빨강
+    T.goto(0, 495) # 글자를 출력할 위치로 보냄
     pygame.init()
-    music = pygame.mixer.music
     music.load("Darara_5sec.mp3")
-    t.title("거북왕을 찾아라")
-    t.shape("turtle")
     t.fillcolor("#FACC2E")
-    t.setup(width = 1920, height = 1070, startx = 0, starty = 0)
 
     RunningTime = int(t.numinput("숫자 입력", "몇 초동안 움직이실건가요?"))
     a = r.randint(1, 360)
 
     # 거북이가 판 그리는 부분 ㅇㅈ?
-    music.play()
+    music.play() # 로드해놨던 Darara_5sec를 재생함
     t.speed(10)
     t.pensize(10) # 거북이 똥 사이즈 10
-    t.up()
+    t.up() 
     t.setpos(-900, 500)
     t.down()
     for i in range(2):
@@ -127,7 +148,7 @@ while 1:
     Timer = int(time.time() - StartTime)
     while 1:
         if RunningTime <= time.time() - StartTime:
-            T.clear()
+            T.clear() # 타이머 지우기
             EndPosition = t.pos()
             for x in Square_X:
                 if EndPosition[0] < x: # 가로 경계선을 기준으로 어디서 끝났는지 구하기 위함
@@ -141,25 +162,25 @@ while 1:
             music.load("Ending.mp3")
             music.play()
             break
-        T.write(Timer, False, "center", ("Consolas", 20))
+        T.write(Timer, False, "center", ("Consolas", 30)) # t의 clone인 T의 위치에 현재 시간 표시
         angle = r.randint(-30, 30)
         t.fd(5)
         a += angle
         t.setheading(a)
-        if Timer != int(time.time() - StartTime):
-            T.clear()
-            Timer = int(time.time() - StartTime)
-            T.write(Timer, False, "center", ("Consolas", 20))
+        if Timer != int(time.time() - StartTime): # 정수 기준으로 시간이 변하면
+            T.clear() # 그 전에 써져있던 타이머 지우고
+            Timer = int(time.time() - StartTime) # 타이머 업데이트 해버리기~
+            T.write(Timer, False, "center", ("Consolas", 30)) # 오지게 덮어 씌워버리기~
 
 
         # 거북이가 가장자리에 닿았을 때
         # 튕기게 하는 부분 ㅇㅈ? ㅇ ㅇㅈ
-        if(t.pos()[0] > 900 or t.pos()[0] < -900): # 왼쪽에 닿았을 때
+        if(t.pos()[0] >= 900 or t.pos()[0] <= -900): # 왼쪽에 닿았을 때
             t.up()
             t.setx(t.pos()[0] * -1)
             t.down()
 
-        if(t.pos()[1] > 500 or t.pos()[1] < -500): # 위쪽
+        if(t.pos()[1] >= 500 or t.pos()[1] <= -500): # 위쪽
             t.up()
             t.sety(t.pos()[1] * -1)
             t.down()
@@ -207,7 +228,13 @@ while 1:
     EndHeading = t.heading()
     t.goto(EndPosition[0], EndPosition[1])
     t.setheading(EndHeading)
-
+    ClonePosSet(Answer)
+    T.setheading(0)
+    T.fd(225)
+    T.setheading(-90)
+    T.fd(140)
+    T.write(Answer, False, "center", ("Consolas", 30))
+    
     print("정답은", Answer, "입니다!")
     if WhatNum == Answer:
         music.load("Chuka_Faster.mp3")
@@ -220,7 +247,7 @@ while 1:
             c += 0.1
             t.left(t.heading() + i)
             t.shapesize(c, c)
-        print("ㅗㅜㅑ 맞추셨네요! 축하합니다 짝짝짝!")
+        print("ㅗㅜㅑ 맞추셨네요! 축하합니다 짝짝짝!\n")
     else:
         t.up()
         t.speed(10)
@@ -229,8 +256,9 @@ while 1:
         time.sleep(1)
         t.fillcolor("red")
         t.shapesize(5, 5)
-        print("꽝!")
+        print("꽝!\n")
 
-        quit = t.textinput("확인", "종료하실거면 Q 계속하실거면 아무거나 넣어주세요")
-        if quit == 'q' or quit == 'Q':
-            break
+    quit = t.textinput("확인", "종료하실거면 Q 계속하실거면 아무거나 넣어주세요")
+    if quit == 'q' or quit == 'Q':
+        break
+t.bye()
